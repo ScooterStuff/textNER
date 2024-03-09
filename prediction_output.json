@@ -1,0 +1,23 @@
+{
+    "mode": "Fifa",
+    "config": {
+        "hand": "right",
+        "mouse": "none",
+        "default_events": []
+    },
+    "poses": {
+        "fist": {
+            "action": "key_down",
+            "args": "pass the ball"
+        },
+        "three finger": {
+            "action": "key_down",
+            "args": "sprint"
+        },
+        "kick": {
+            "action": "key_down",
+            "args": "kick the ball"
+        }
+    },
+    "gestures": {}
+}
