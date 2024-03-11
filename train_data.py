@@ -22,7 +22,10 @@ TRAIN_DATA = [
 ("I want my left hand to control movement of the player", {'entities': [(10, 14, "HAND")]}),
 ("I want to pass the ball when I have my fist up", {'entities': [(10, 23, "ACTION"), (39,43, "GESTURE")]}),
 ("I want to sprint when I show three fingers", {'entities': [(10, 16, "ACTION"), (29, 42, "GESTURE")]}),
-("I also want to kick the ball when I kick in real life", {'entities': [(15, 28, "ACTION"), (36, 40, "GESTURE")]})
+("I also want to kick the ball when I kick in real life", {'entities': [(15, 28, "ACTION"), (36, 40, "GESTURE")]}),
+("I want to jump over obstacles in Assassin's Creed by raising my arms", {"entities": [(31, 48, "GAME"), (54, 67, "GESTURE")]}),
+("Let me swing my sword in Skyrim using this motion", {"entities": [(19, 25, "GAME"), (37, 44, "GESTURE")]}),
+("I'll aim and shoot in Call of Duty with my index finger", {"entities": [(21, 34, "GAME"), (42, 56, "GESTURE")]})
 ]
 
 
