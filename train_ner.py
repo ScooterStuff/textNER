@@ -8,6 +8,8 @@ from pathlib import Path
 from itertools import chain
 from train_data import TRAIN_DATA
 from spacy.language import Language
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 
 # Function to add game matcher to an NLP object
@@ -55,7 +57,7 @@ def entity_matcher_component(doc, matcher):
     return doc
 
 
-def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=10):
+def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=100):
     if Path(model_dir).exists():
         print(f"Loading existing model from: {model_dir}")
         nlp = spacy.load(model_dir)  # Load the existing model

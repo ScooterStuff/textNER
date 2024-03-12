@@ -45,7 +45,7 @@ model = SentenceTransformer("./fine-tuned-model")
 
 # Now you can use the model as before to generate embeddings and calculate similarities
 # The target phrase and phrases to compare
-target_phrase = "kick the ball"
+target_phrase = "stab"
 phrases = ["walk", "pass", "punt", "run"]
 phrases_button = ["A","X","Y","B"]
 
