@@ -18,19 +18,25 @@
   },
   "labels":{
     "ner":[
-      "ACTION",
+      "ACTION-O",
       "GAME",
       "GESTURE",
-      "HAND"
+      "LANDMARK",
+      "ORI",
+      "POSES"
     ]
   },
   "pipeline":[
     "ner",
-    "game_entity_matcher"
+    "game_entity_matcher",
+    "gesture_entity_matcher",
+    "pose_entity_matcher"
   ],
   "components":[
     "ner",
-    "game_entity_matcher"
+    "game_entity_matcher",
+    "gesture_entity_matcher",
+    "pose_entity_matcher"
   ],
   "disabled":[
 

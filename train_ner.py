@@ -44,20 +44,104 @@ def game_entity_matcher(doc):
         span.root.ent_type_ = "GAME"
     return doc
 
-@Language.component("game_entity_matcher")
-def entity_matcher_component(doc, matcher):
+@Language.component("gesture_entity_matcher")
+def gesture_entity_matcher(doc):
+    matcher = Matcher(doc.vocab)
+    # Patterns based on the gestures list
+    gesture_patterns = [
+        [{"LOWER": "bow"}, {"LOWER": "arrow"}],
+        [{"LOWER": "fighting"}, {"LOWER": "stance"}],
+        [{"LOWER": "front"}, {"LOWER": "kick"}],
+        [{"LOWER": "hadouken"}],
+        [{"LOWER": "helicopter"}],
+        [{"LOWER": "index"}, {"LOWER": "pinch"}],
+        [{"LOWER": "kick"}],
+        [{"LOWER": "left"}, {"LOWER": "hook"}],
+        [{"LOWER": "left"}, {"LOWER": "kick"}],
+        [{"LOWER": "left"}, {"LOWER": "punch"}],
+        [{"LOWER": "mine"}],
+        [{"LOWER": "punch"}],
+        [{"LOWER": "push"}, {"LOWER": "back"}],
+        [{"LOWER": "right"}, {"LOWER": "clockwise"}, {"LOWER": "circle"}],
+        [{"LOWER": "right"}, {"LOWER": "hook"}],
+        [{"LOWER": "right"}, {"LOWER": "kick"}],
+        [{"LOWER": "right"}, {"LOWER": "punch"}],
+        [{"LOWER": "uppercut"}],
+        [{"LOWER": "walk"}, {"LOWER": "left"}],
+        [{"LOWER": "walk"}, {"LOWER": "right"}],
+    ]
+    matcher
+    matcher.add("GESTURE", gesture_patterns)
     matches = matcher(doc)
-    spans = [doc[start:end] for _, start, end in matches]
+    spans = [doc[start:end] for match_id, start, end in matches]
     filtered_spans = filter_spans(spans)
+
     with doc.retokenize() as retokenizer:
         for span in filtered_spans:
             retokenizer.merge(span)
+
     for span in filtered_spans:
-        span.root.ent_type_ = "GAME"
+        span.root.ent_type_ = "GESTURE"
+    return doc
+
+@Language.component("pose_entity_matcher")
+def pose_entity_matcher(doc):
+    matcher = Matcher(doc.vocab)
+    # Patterns based on the poses list
+    pose_patterns = [
+        [{"LOWER": "fist"}],
+        [{"LOWER": "fist2"}],
+        [{"LOWER": "five"}, {"LOWER": "fingers"}, {"LOWER": "pinch"}],
+        [{"LOWER": "four"}, {"LOWER": "fingers"}, {"LOWER": "pinch"}],
+        [{"LOWER": "full"}, {"LOWER": "pinch"}],
+        [{"LOWER": "gun"}, {"LOWER": "click"}],
+        [{"LOWER": "gun"}, {"LOWER": "click2"}],
+        [{"LOWER": "gun"}, {"LOWER": "click3"}],
+        [{"LOWER": "hand"}, {"LOWER": "backward"}],
+        [{"LOWER": "hand"}, {"LOWER": "forward"}],
+        [{"LOWER": "index"}, {"LOWER": "pinch"}],
+        [{"LOWER": "index"}],
+        [{"LOWER": "palm"}, {"LOWER": "stop"}],
+        [{"LOWER": "peace"}],
+        [{"LOWER": "pinky"}, {"LOWER": "2"}, {"LOWER": "up"}],
+        [{"LOWER": "pinky"}, {"LOWER": "3"}, {"LOWER": "up"}],
+        [{"LOWER": "pinky"}, {"LOWER": "up"}, {"LOWER": "education"}],
+        [{"LOWER": "pinky"}, {"LOWER": "up"}],
+        [{"LOWER": "punch"}, {"LOWER": "heavy"}],
+        [{"LOWER": "punch"}, {"LOWER": "light"}],
+        [{"LOWER": "shoot"}],
+        [{"LOWER": "three"}, {"LOWER": "fingers"}, {"LOWER": "pinch"}, {"LOWER": "hand"}, {"LOWER": "closed"}],
+        [{"LOWER": "three"}, {"LOWER": "fingers"}, {"LOWER": "pinch"}],
+        [{"LOWER": "three"}, {"LOWER": "fingers"}, {"LOWER": "release"}, {"LOWER": "hand"}, {"LOWER": "closed"}],
+        [{"LOWER": "three"}, {"LOWER": "fingers"}],
+        [{"LOWER": "thumb"}, {"LOWER": "index"}, {"LOWER": "pinch"}, {"LOWER": "hand"}, {"LOWER": "closed"}],
+        [{"LOWER": "thumb"}, {"LOWER": "index"}, {"LOWER": "pinch"}],
+        [{"LOWER": "thumb"}, {"LOWER": "index"}, {"LOWER": "release"}, {"LOWER": "hand"}, {"LOWER": "closed"}],
+        [{"LOWER": "thumb"}, {"LOWER": "index"}, {"LOWER": "release"}],
+        [{"LOWER": "thumb"}, {"LOWER": "middle"}, {"LOWER": "pinch"}],
+        [{"LOWER": "thumb"}, {"LOWER": "middle"}, {"LOWER": "release"}],
+        [{"LOWER": "thumb"}, {"LOWER": "pinky"}, {"LOWER": "pinch"}],
+        [{"LOWER": "thumb"}, {"LOWER": "pinky"}, {"LOWER": "release"}],
+        [{"LOWER": "thumb"}, {"LOWER": "ring"}, {"LOWER": "pinch"}],
+        [{"LOWER": "thumb"}, {"LOWER": "ring"}, {"LOWER": "release"}],
+        [{"LOWER": "thumb"}, {"LOWER": "up"}],
+    ]
+    matcher.add("POSE", pose_patterns)
+    matches = matcher(doc)
+    spans = [doc[start:end] for match_id, start, end in matches]
+    filtered_spans = filter_spans(spans)
+
+    with doc.retokenize() as retokenizer:
+        for span in filtered_spans:
+            retokenizer.merge(span)
+
+    for span in filtered_spans:
+        span.root.ent_type_ = "POSE"
     return doc
 
 
-def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=10):
+
+def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=200):
     # Check if model directory exists and model is loadable
     if Path(model_dir).exists():
         print(f"Loading existing model from: {model_dir}")
@@ -75,11 +159,9 @@ def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=10):
                 ner.add_label(ent[2])
 
     # Check if the component already exists in the pipeline
-    if "game_entity_matcher" not in nlp.pipe_names:
-        nlp.add_pipe("game_entity_matcher", last=True)
-    else:
-        nlp.remove_pipe("game_entity_matcher")
-        nlp.add_pipe("game_entity_matcher", last=True)
+    for matcher_component in ["game_entity_matcher", "gesture_entity_matcher", "pose_entity_matcher"]:
+        if matcher_component not in nlp.pipe_names:
+            nlp.add_pipe(matcher_component, last=True)
     
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
     with nlp.disable_pipes(*other_pipes):  # Only train NER

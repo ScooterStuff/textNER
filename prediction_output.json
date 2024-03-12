@@ -1,23 +1,36 @@
 {
-    "mode": "Fifa",
-    "config": {
-        "hand": "right",
-        "mouse": "none",
-        "default_events": []
-    },
-    "poses": {
-        "fist": {
-            "action": "key_down",
-            "args": "pass the ball"
-        },
-        "three finger": {
-            "action": "key_down",
-            "args": "sprint"
-        },
-        "kick": {
-            "action": "key_down",
-            "args": "kick the ball"
+    "mode": "Tetris",
+    "orientation": "left",
+    "landmark": "hand",
+    "poses": [
+        {
+            "files": "thumb down",
+            "action": {
+                "tmpt": "interact with objects",
+                "class": "",
+                "method": "hold",
+                "args": []
+            }
         }
-    },
-    "gestures": {}
+    ],
+    "gestures": [
+        {
+            "files": "hadouken",
+            "action": {
+                "tmpt": "interact with objects",
+                "class": "",
+                "method": "click",
+                "args": []
+            }
+        },
+        {
+            "files": "index pinch",
+            "action": {
+                "tmpt": "interact with objects",
+                "class": "",
+                "method": "click",
+                "args": []
+            }
+        }
+    ]
 }
