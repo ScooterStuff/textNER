@@ -57,13 +57,14 @@ def entity_matcher_component(doc, matcher):
     return doc
 
 
-def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=100):
+def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=10):
+    # Check if model directory exists and model is loadable
     if Path(model_dir).exists():
         print(f"Loading existing model from: {model_dir}")
         nlp = spacy.load(model_dir)  # Load the existing model
     else:
         print("Creating a new model")
-        nlp = spacy.blank("en") 
+        nlp = spacy.blank("en")  # Create a blank Language class
         if "ner" not in nlp.pipe_names:
             ner = nlp.add_pipe("ner", last=True)
         else:
@@ -80,23 +81,27 @@ def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=100):
         nlp.remove_pipe("game_entity_matcher")
         nlp.add_pipe("game_entity_matcher", last=True)
     
-
-    
-    # Disable other pipeline components during training
-    with nlp.disable_pipes(*[pipe for pipe in nlp.pipe_names if pipe != "ner"]):
-        optimizer = nlp.resume_training()
+    other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
+    with nlp.disable_pipes(*other_pipes):  # Only train NER
+        if not Path(model_dir).exists():
+            optimizer = nlp.begin_training()
+        else:
+            optimizer = nlp.resume_training()
         for itn in range(n_iter):
+            random.shuffle(new_data)
             losses = {}
-            random.shuffle(new_data)  # Shuffle the training data
             for text, annotations in new_data:
                 doc = nlp.make_doc(text)
                 example = Example.from_dict(doc, annotations)
                 nlp.update([example], drop=0.5, losses=losses, sgd=optimizer)
             print(f"Losses at iteration {itn}: {losses}")
 
-    # Save the updated model
-    nlp.to_disk(model_dir)
-    print(f"Saved model to: {model_dir}")
+    # Save model to output directory
+    output_dir = Path(model_dir)
+    if not output_dir.exists():
+        output_dir.mkdir()
+    nlp.to_disk(output_dir)
+    print(f"Saved model to: {output_dir}")
 
 if __name__ == "__main__":
     train_ner()
