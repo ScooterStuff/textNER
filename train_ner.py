@@ -145,7 +145,7 @@ def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=200):
     # Check if model directory exists and model is loadable
     if Path(model_dir).exists():
         print(f"Loading existing model from: {model_dir}")
-        nlp = spacy.load(model_dir)  # Load the existing model
+        nlp = spacy.load(model_dir)
     else:
         print("Creating a new model")
         nlp = spacy.blank("en")  # Create a blank Language class
