@@ -7,8 +7,8 @@ def find_first_occurrence(text, search_term):
         return -1, -1  # Indicates the term was not found
 
 # Example usage
-text = "Rotate item with a three fingers pinch"
-search_term = "three fingers pinch"
+text = "To crouch just do a thumb down"
+search_term = "thumb down"
 start, end = find_first_occurrence(text, search_term)
 print(f"First occurrence: Start Index = {start}, End Index = {end+1}")
 

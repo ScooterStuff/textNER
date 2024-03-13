@@ -12,7 +12,7 @@ TRAIN_DATA = [
     ("I want to cast a spell with an index pinch", {"entities": [(10, 22, "GESTURE"),(31, 42, "GESTURE")]}),
     ("Block attacks with a thumb index pinch", {"entities": [(0,13, "ACTION-O"),(21, 38, "POSES")]}),
     ("Use the index pinch to interact with objects", {"entities": [(8, 19, "POSES"),(23, 44, "ACTION-O")]}),
-    ("To crouch just do a thumb down", {"entities": [(3,9, "ACTION-O"),(21, 31, "POSES")]}),
+    ("To crouch just do a thumb down", {"entities": [(3,9, "ACTION-O"),(20, 30, "POSES")]}),
     ("Rotate item with a three fingers pinch", {"entities": [(0,11, "ACTION-O"),(19,38, "GESTURE")]}),
 ]
 
