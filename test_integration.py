@@ -106,14 +106,6 @@ class TestSystemLoad(unittest.TestCase):
 
         self.assertLess(duration, 10, "The system took too long to process commands under load.")
 
-class TestExternalIntegration(unittest.TestCase):
-    @mock.patch('external_library.some_function')
-    def test_integration_with_external_library(self, mock_function):
-        mock_function.return_value = "Expected result"
-        result = your_function_that_calls_some_function()
-
-        self.assertEqual(result, "Expected result", "The integration with the external library did not work as expected.")
-
 
 if __name__ == "__main__":
     unittest.main()
