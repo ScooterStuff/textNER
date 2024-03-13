@@ -4,6 +4,7 @@ from pathlib import Path
 from spacy.util import compile_infix_regex
 from predict import predict_to_json
 import spacy
+import time
 
 class TestIntegrationNERModel(unittest.TestCase):
     @classmethod
@@ -75,6 +76,43 @@ class TestComplexCommandJSONCreation(unittest.TestCase):
         for expected_action in expected_actions:
             self.assertIn(expected_action, actions_from_output, f"Expected action {expected_action} not found in output.")
 
+class TestErrorHandling(unittest.TestCase):
+    def test_unrecognized_input(self):
+        test_sentence = "I want to play a game that doesn't exist using gestures that aren't defined."
+        expected_response = {"error": "Unrecognized game or gesture"}
+
+        temp_output_file = Path("./error_handling_output.json")
+        predict_to_json(test_sentence, str(temp_output_file))
+
+        with open(temp_output_file, 'r', encoding='utf-8') as file:
+            output_data = json.load(file)
+
+        temp_output_file.unlink()  # Clean up
+
+        self.assertEqual(output_data.get("error"), expected_response["error"], "The system did not properly handle unrecognized input.")
+
+class TestSystemLoad(unittest.TestCase):
+    def test_system_performance_under_load(self):
+        test_sentences = ["Play Tetris with my left hand.", "Jump in Minecraft by clapping hands.", "Shoot in Call of Duty using two fingers."] * 10  # Repeat to simulate load
+        start_time = time.time()
+
+        for sentence in test_sentences:
+            temp_output_file = Path(f"./load_test_output_{time.time()}.json")
+            predict_to_json(sentence, str(temp_output_file))
+            temp_output_file.unlink()  # Immediate cleanup
+
+        end_time = time.time()
+        duration = end_time - start_time
+
+        self.assertLess(duration, 10, "The system took too long to process commands under load.")
+
+class TestExternalIntegration(unittest.TestCase):
+    @mock.patch('external_library.some_function')
+    def test_integration_with_external_library(self, mock_function):
+        mock_function.return_value = "Expected result"
+        result = your_function_that_calls_some_function()
+
+        self.assertEqual(result, "Expected result", "The integration with the external library did not work as expected.")
 
 
 if __name__ == "__main__":
