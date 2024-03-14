@@ -15,15 +15,6 @@
     ],
     "gestures": [
         {
-            "files": "hadouken",
-            "action": {
-                "tmpt": "Rotate item",
-                "class": "rotate",
-                "method": "click",
-                "args": []
-            }
-        },
-        {
             "files": "index_pinch",
             "action": {
                 "tmpt": "interact with objects",

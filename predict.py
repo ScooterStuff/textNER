@@ -137,7 +137,8 @@ def predict(text):
         print("Entity:", ent.text, ent.label_)
 
 if __name__ == "__main__":
-    predict_text = "Rotate item using hadouken"
+    #"I want to play Minecraft. I want to jump using three fingers; I want to walk in game when show fist."
+    predict_text = "I want to jump using three fingers"
     predict(predict_text)
     # predict_long_text = "I want to play Fifa with my body, I want my right hand to controll movement of the player, I want to put my fist up to pass the ball, I want to sprint when I show three finger, I also want to kick the ball when I kick in real life"
     predict_long_text = "I want to play Tetris with my left hand, Rotate item using hadouken, To crouch just do a thumb down, Use the index pinch to interact with objects"

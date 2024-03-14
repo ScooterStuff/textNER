@@ -126,7 +126,7 @@ def pose_entity_matcher(doc):
         [{"LOWER": "thumb"}, {"LOWER": "ring"}, {"LOWER": "release"}],
         [{"LOWER": "thumb"}, {"LOWER": "up"}],
     ]
-    matcher.add("POSE", pose_patterns)
+    matcher.add("POSES", pose_patterns)
     matches = matcher(doc)
     spans = [doc[start:end] for match_id, start, end in matches]
     filtered_spans = filter_spans(spans)
@@ -136,12 +136,12 @@ def pose_entity_matcher(doc):
             retokenizer.merge(span)
 
     for span in filtered_spans:
-        span.root.ent_type_ = "POSE"
+        span.root.ent_type_ = "POSES"
     return doc
 
 
 
-def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=200):
+def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=50):
     # Check if model directory exists and model is loadable
     if Path(model_dir).exists():
         print(f"Loading existing model from: {model_dir}")

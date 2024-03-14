@@ -14,6 +14,9 @@ TRAIN_DATA = [
     ("Use the index pinch to interact with objects", {"entities": [(8, 19, "POSES"),(23, 44, "ACTION-O")]}),
     ("To crouch just do a thumb down", {"entities": [(3,9, "ACTION-O"),(20, 30, "POSES")]}),
     ("Rotate item with a three fingers pinch", {"entities": [(0,11, "ACTION-O"),(19,38, "GESTURE")]}),
+    ("I want to jump using three fingers", {"entities": [(10,14, "ACTION-O"),(21,34, "POSES")]}),
+    ("I want to walk in game when show fist", {"entities": [(10,14, "ACTION-O"),(33,37, "POSES")]}),
+    ("In Pokemon", {"entities": [(3, 10, "GAME")]}),
 ]
 
 

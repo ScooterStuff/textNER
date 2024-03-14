@@ -1,0 +1,17 @@
+{
+    "mode": "Minecraft",
+    "orientation": "",
+    "landmark": "",
+    "poses": [
+        {
+            "files": "three_fingers",
+            "action": {
+                "tmpt": "destroy",
+                "class": "none",
+                "method": "hold",
+                "args": []
+            }
+        }
+    ],
+    "gestures": []
+}
