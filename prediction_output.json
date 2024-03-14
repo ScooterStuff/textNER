@@ -4,32 +4,33 @@
     "landmark": "hand",
     "poses": [
         {
-            "files": "hadouken",
+            "files": "thumb_up",
             "action": {
-                "tmpt": "rotate",
-                "class": "",
-                "method": "click",
-                "args": []
-            }
-        },
-        {
-            "files": "thumb down",
-            "action": {
-                "tmpt": "rotate",
-                "class": "",
+                "tmpt": "crouch",
+                "class": "rotate",
                 "method": "hold",
-                "args": []
-            }
-        },
-        {
-            "files": "interact with objects",
-            "action": {
-                "tmpt": "switch",
-                "class": "",
-                "method": "click",
                 "args": []
             }
         }
     ],
-    "gestures": []
+    "gestures": [
+        {
+            "files": "hadouken",
+            "action": {
+                "tmpt": "Rotate item",
+                "class": "rotate",
+                "method": "click",
+                "args": []
+            }
+        },
+        {
+            "files": "index_pinch",
+            "action": {
+                "tmpt": "interact with objects",
+                "class": "none",
+                "method": "click",
+                "args": []
+            }
+        }
+    ]
 }

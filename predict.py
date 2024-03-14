@@ -18,7 +18,8 @@ def predict_to_json(sentences, output_file):
         "gestures": []
     }
     game = ""
-    
+    gestures = ['bow_arrow', 'fighting_stance', 'front_kick', 'hadouken', 'helicopter', 'index_pinch', 'kick', 'left_hook', 'left_kick', 'left_punch', 'mine', 'punch', 'push_back', 'right_clockwise_circle', 'right_hook', 'right_kick', 'right_punch', 'uppercut', 'walk_left', 'walk_right']
+    poses = ['fist', 'fist2', 'five_fingers_pinch', 'four_fingers_pinch', 'full_pinch', 'gun_click', 'gun_click2', 'gun_click3', 'hand_backward', 'hand_forward', 'index_pinch', 'index', 'palm_stop', 'peace', 'pinky_2_up', 'pinky_3_up', 'pinky_up_education', 'pinky_up', 'punch_heavy', 'punch_light', 'shoot', 'three_fingers_pinch_hand_closed', 'three_fingers_pinch', 'three_fingers_release_hand_closed', 'three_fingers', 'thumb_index_pinch_hand_closed', 'thumb_index_pinch', 'thumb_index_release_hand_closed', 'thumb_index_release', 'thumb_middle_pinch', 'thumb_middle_release', 'thumb_pinky_pinch', 'thumb_pinky_release', 'thumb_ring_pinch', 'thumb_ring_release', 'thumb_up']  
     # Process each sentence to find entities
     # split_sentences = [sentence.strip() for sentence in sentences.replace('and', ',').replace(';', ',').replace('.', ',').split(',') if sentence]
     split_sentences = [sentence.strip() for sentence in sentences.replace(';', ',').replace('.', ',').split(',') if sentence]
@@ -44,10 +45,10 @@ def predict_to_json(sentences, output_file):
         # Assuming the last action in the sentence applies to the gestures/poses found
         if actions and pos:
             entity_data = {
-                    "files": ent.text,
+                    "files": similarties_match(pos, poses),
                     "action": {
-                        "tmpt": motion_to_action_mapping(actions[-1], game),  # Placeholder for action, to be filled later
-                        "class": "",  # Placeholder for similarity-based class
+                        "tmpt": actions[-1],  # Placeholder for action, to be filled later
+                        "class": motion_to_action_mapping(actions[-1], game),  # Placeholder for similarity-based class
                         "method": "hold",
                         "args": []  # Placeholder for similarity-based args
                     }
@@ -55,15 +56,15 @@ def predict_to_json(sentences, output_file):
             output_data["poses"].append(entity_data)
         elif actions and ges:
             entity_data = {
-                    "files": ent.text,
+                    "files":  similarties_match(ges, gestures),
                     "action": {
-                        "tmpt": motion_to_action_mapping(actions[-1], game),  # Placeholder for action, to be filled later
-                        "class": "",  # Placeholder for similarity-based class
+                        "tmpt": actions[-1],  # Placeholder for action, to be filled later
+                        "class": motion_to_action_mapping(actions[-1], game),  # Placeholder for similarity-based class
                         "method": "click",
                         "args": []  # Placeholder for similarity-based args
                     }
                 }
-            output_data["poses"].append(entity_data)
+            output_data["gestures"].append(entity_data)
         
 
     # Write the output_data dictionary to a JSON file
@@ -102,11 +103,14 @@ def similarties_match(target_phrase, possible_phrases):
         similarities[phrase] = similarity
     
     # Find the most similar phrase
-    most_similar_phrase = max(similarities, key=similarities.get)
+    most_similar_phrase, highest_similarity = max(similarities.items(), key=lambda item: item[1], default=(None, 0))
     # for phrase, similarity in similarities.items():
     #     print(f"Similarity to '{phrase}': {similarity:.4f}")
     
-    return most_similar_phrase
+    if highest_similarity < 0.25:
+        return "none"
+    else:
+        return most_similar_phrase
     
 def action_to_button_mapping(action, game):
     # Define a nested dictionary with mappings for each game
