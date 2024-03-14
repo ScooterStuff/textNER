@@ -1,12 +1,10 @@
 import spacy
-from spacy.language import Language
-from spacy.matcher import Matcher
 import json
-from spacy.util import filter_spans
 from train_ner import game_entity_matcher
 from train_ner import gesture_entity_matcher
 from train_ner import pose_entity_matcher
-
+from scipy.spatial.distance import cosine
+from sentence_transformers import SentenceTransformer
 
 def predict_to_json(sentences, output_file):
     nlp = spacy.load("./ner_model")  # Ensure this path is correct
@@ -20,8 +18,6 @@ def predict_to_json(sentences, output_file):
     game = ""
     gestures = ['bow_arrow', 'fighting_stance', 'front_kick', 'hadouken', 'helicopter', 'index_pinch', 'kick', 'left_hook', 'left_kick', 'left_punch', 'mine', 'punch', 'push_back', 'right_clockwise_circle', 'right_hook', 'right_kick', 'right_punch', 'uppercut', 'walk_left', 'walk_right']
     poses = ['fist', 'fist2', 'five_fingers_pinch', 'four_fingers_pinch', 'full_pinch', 'gun_click', 'gun_click2', 'gun_click3', 'hand_backward', 'hand_forward', 'index_pinch', 'index', 'palm_stop', 'peace', 'pinky_2_up', 'pinky_3_up', 'pinky_up_education', 'pinky_up', 'punch_heavy', 'punch_light', 'shoot', 'three_fingers_pinch_hand_closed', 'three_fingers_pinch', 'three_fingers_release_hand_closed', 'three_fingers', 'thumb_index_pinch_hand_closed', 'thumb_index_pinch', 'thumb_index_release_hand_closed', 'thumb_index_release', 'thumb_middle_pinch', 'thumb_middle_release', 'thumb_pinky_pinch', 'thumb_pinky_release', 'thumb_ring_pinch', 'thumb_ring_release', 'thumb_up']  
-    # Process each sentence to find entities
-    # split_sentences = [sentence.strip() for sentence in sentences.replace('and', ',').replace(';', ',').replace('.', ',').split(',') if sentence]
     split_sentences = [sentence.strip() for sentence in sentences.replace(';', ',').replace('.', ',').split(',') if sentence]
     for sentence in split_sentences:
         doc = nlp(sentence)
@@ -83,12 +79,7 @@ def motion_to_action_mapping(motion, game):
     else:
         return "Game not found"
     
-from scipy.spatial.distance import cosine
-from sentence_transformers import SentenceTransformer
-import pandas as pd
-
-# Assuming you have initialized and fine-tuned your model as per sim_nlp.py
-model_path = "./sim/fine-tuned-model"  # Path to your fine-tuned model
+model_path = "./fine-tuned-model"  # Path to your fine-tuned model
 model = SentenceTransformer(model_path)
 
 def similarties_match(target_phrase, possible_phrases):
