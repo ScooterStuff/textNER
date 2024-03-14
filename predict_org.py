@@ -117,7 +117,6 @@ def predict(split_sentences, output_data):
             elif ent.label_ == "GESTURE":
                 ges = text
         if actions and pos:
-            
             entity_data = {
                     "files": similarties_match(pos, poses),
                     "action": {
