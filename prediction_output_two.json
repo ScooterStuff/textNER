@@ -1,17 +1,36 @@
 {
     "mode": "Minecraft",
-    "orientation": "",
-    "landmark": "",
+    "orientation": "right",
+    "landmark": "arm",
     "poses": [
+        {
+            "files": "thumb_up",
+            "action": {
+                "tmpt": "jump",
+                "class": "jump",
+                "method": "hold",
+                "args": []
+            }
+        },
         {
             "files": "three_fingers",
             "action": {
                 "tmpt": "destroy",
-                "class": "none",
+                "class": "break",
                 "method": "hold",
                 "args": []
             }
         }
     ],
-    "gestures": []
+    "gestures": [
+        {
+            "files": "index_pinch",
+            "action": {
+                "tmpt": "place down a block",
+                "class": "place",
+                "method": "click",
+                "args": []
+            }
+        }
+    ]
 }

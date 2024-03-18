@@ -141,7 +141,7 @@ def pose_entity_matcher(doc):
 
 
 
-def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=10):
+def train_ner(model_dir="./ner_model", new_data=TRAIN_DATA, n_iter=200):
     # Check if model directory exists and model is loadable
     if Path(model_dir).exists():
         print(f"Loading existing model from: {model_dir}")

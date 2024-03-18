@@ -36,7 +36,7 @@ def similarties_match(target_phrase, possible_phrases):
         # for phrase, similarity in similarities.items():
         #     print(f"Similarity to '{phrase}': {similarity:.4f}")
         
-        if highest_similarity < 0.45:
+        if highest_similarity < 0.2:
             return "none"
         else:
             return most_similar_phrase
@@ -142,8 +142,8 @@ def predict(split_sentences, output_data):
 
 def main():
     predict_text = "I want to play Tetris with my left hand, Rotate item using hadouken, To crouch just do a thumb down, Use the index pinch to interact with objects"
-    predict_text = "I want to play Minecraft. I want to jump using three fingers"
-    predict_text = "In  Minecraft, pinch to place a block, three fingers to destroy."
+    # predict_text = "I want to play Minecraft. I want to jump using three fingers"
+    predict_text = "I want to play Minecraft with my right arm, I want to jump when I pose thumb down, I want to do index pinch to place down a block, three fingers to destroy."
     predict_to_json(predict_text, "prediction_output_two.json")
 
 if __name__ == "__main__":
