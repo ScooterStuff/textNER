@@ -1,10 +1,10 @@
 {
     "mode": "Minecraft",
     "orientation": "right",
-    "landmark": "arm",
+    "landmark": "hand",
     "poses": [
         {
-            "files": "thumb_up",
+            "files": "thumb_down",
             "action": {
                 "tmpt": "jump",
                 "class": "jump",
