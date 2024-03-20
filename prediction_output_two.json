@@ -1,17 +1,8 @@
 {
     "mode": "Minecraft",
     "orientation": "right",
-    "landmark": "hand",
+    "landmark": "arm",
     "poses": [
-        {
-            "files": "thumb_down",
-            "action": {
-                "tmpt": "jump",
-                "class": "jump",
-                "method": "hold",
-                "args": []
-            }
-        },
         {
             "files": "three_fingers",
             "action": {
@@ -23,6 +14,15 @@
         }
     ],
     "gestures": [
+        {
+            "files": "index_pinch",
+            "action": {
+                "tmpt": "jump",
+                "class": "jump",
+                "method": "click",
+                "args": []
+            }
+        },
         {
             "files": "index_pinch",
             "action": {

@@ -3,11 +3,13 @@ import json
 from sentence_transformers import SentenceTransformer
 from scipy.spatial.distance import cosine
 from train_ner import game_entity_matcher, gesture_entity_matcher, pose_entity_matcher
+from deepmultilingualpunctuation import PunctuationModel
+
 
 # Path to your fine-tuned model and NER model
 MODEL_PATH = "./fine-tuned-model"
 NER_MODEL_PATH = "./ner_model"
-
+puncmodel = PunctuationModel()
 # Load models outside of functions to avoid reloading them on each function call
 try:
     # Load models
@@ -140,11 +142,14 @@ def predict(split_sentences, output_data):
             output_data["gestures"].append(entity_data)
 
 
+
+
 def main():
     predict_text = "I want to play Tetris with my left hand, Rotate item using hadouken, To crouch just do a thumb down, Use the index pinch to interact with objects"
     # predict_text = "I want to play Minecraft. I want to jump using three fingers"
-    predict_text = "I want to play Minecraft with my right arm, I want to jump when I pose thumb down, I want to do index pinch to place down a block, three fingers to destroy."
-    predict_to_json(predict_text, "prediction_output_two.json")
+    predict_text = "I want to play Minecraft with my right arm I want to jump when I pose thumb down I want to do index pinch to place down a block three fingers to destroy."
+    result = puncmodel.restore_punctuation(predict_text)
+    predict_to_json(result, "prediction_output_two.json")
 
 if __name__ == "__main__":
     main()
