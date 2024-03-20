@@ -26,7 +26,7 @@ pip install spacy sentence-transformers spicy
 
 ## Installation
 Clone this repository to your local machine.
-git clone https://github.com/yourusername/motioninput-config-generator.git
+git clone https://github.com/ScooterStuff/textNER.git
 Navigate to the project directory.
 cd motioninput-config-generator
 Download and install the SpaCy language model.

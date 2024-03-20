@@ -4,12 +4,25 @@
     "landmark": "arm",
     "poses": [
         {
+            "files": "thumb_up",
+            "action": {
+                "tmpt": "jump",
+                "class": "jump",
+                "method": "hold",
+                "args": [
+                    "space"
+                ]
+            }
+        },
+        {
             "files": "three_fingers",
             "action": {
                 "tmpt": "destroy",
                 "class": "break",
                 "method": "hold",
-                "args": []
+                "args": [
+                    "left"
+                ]
             }
         }
     ],
@@ -17,19 +30,12 @@
         {
             "files": "index_pinch",
             "action": {
-                "tmpt": "jump",
-                "class": "jump",
-                "method": "click",
-                "args": []
-            }
-        },
-        {
-            "files": "index_pinch",
-            "action": {
                 "tmpt": "place down a block",
                 "class": "place",
                 "method": "click",
-                "args": []
+                "args": [
+                    "right"
+                ]
             }
         }
     ]
