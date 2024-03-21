@@ -1,73 +1,59 @@
-# Import necessary libraries
-from transformers import AutoModel, AutoTokenizer
-import torch
 from scipy.spatial.distance import cosine
-from sentence_transformers import SentenceTransformer, InputExample, losses, evaluation
-from torch.utils.data import DataLoader
+from sentence_transformers import SentenceTransformer, InputExample, losses
+from torch.utils.data import DataLoader  # Corrected import
 import pandas as pd
-from sentence_transformers import evaluation
 
-# Simulated dataset: Normally, you'd load a dataset from a file
-#This could be fine tune more potentially
-data = [
-    {"sentence1": "move the ball", "sentence2": "pass", "similarity": 0.9},
-    {"sentence1": "move the ball", "sentence2": "walk", "similarity": 0.1},
-    {"sentence1": "move the ball", "sentence2": "punt", "similarity": 0.8},
-    {"sentence1": "move the ball", "sentence2": "run", "similarity": 0.2},
-]
+class ModelFineTuner:
+    def __init__(self, base_model='all-MiniLM-L6-v2', output_path='./fine-tuned-model'):
+        self.model = SentenceTransformer(base_model)
+        self.output_path = output_path
 
-# Convert the simulated dataset to a pandas DataFrame
-df = pd.DataFrame(data)
+    def prepare_data(self, data):
+        """
+        Convert a list of dictionaries to a DataLoader with InputExample objects.
+        :param data: A list of dictionaries with 'sentence1', 'sentence2', and 'similarity' keys
+        :return: A DataLoader object
+        """
+        df = pd.DataFrame(data)
+        examples = [InputExample(texts=[row['sentence1'], row['sentence2']], label=row['similarity']) for index, row in df.iterrows()]
+        dataloader = DataLoader(examples, shuffle=True, batch_size=2)
+        return dataloader
 
-# Convert the DataFrame to a list of InputExample objects
-examples = [InputExample(texts=[row['sentence1'], row['sentence2']], label=row['similarity']) for index, row in df.iterrows()]
+    def fine_tune(self, data, epochs=4, warmup_steps=100):
+        """
+        Fine-tune the model on the provided dataset.
+        :param data: A list of dictionaries with 'sentence1', 'sentence2', and 'similarity' keys
+        :param epochs: Number of epochs to train for
+        :param warmup_steps: Number of warmup steps
+        """
+        train_dataloader = self.prepare_data(data)
+        train_loss = losses.CosineSimilarityLoss(model=self.model)
 
-# Initialize DataLoader
-train_dataloader = DataLoader(examples, shuffle=True, batch_size=2)
+        self.model.fit(train_objectives=[(train_dataloader, train_loss)],
+                       epochs=epochs,
+                       warmup_steps=warmup_steps,
+                       output_path=self.output_path)
 
-# Initialize the model
-model = SentenceTransformer('all-MiniLM-L6-v2')
+    def load_fine_tuned_model(self):
+        """
+        Load the fine-tuned model from the output path.
+        """
+        self.model = SentenceTransformer(self.output_path)
 
-# Define the training method using cosine similarity loss
-train_loss = losses.CosineSimilarityLoss(model=model)
+# Example usage:
 
-# Assuming a very small dataset, let's skip validation for this example.
-# In a real scenario, you should split your data and use a validation set.
+if __name__ == "__main__":
+    fine_tuner = ModelFineTuner()
 
-# Fine-tune the model
-model.fit(train_objectives=[(train_dataloader, train_loss)],
-          epochs=4,  # Adjust epochs based on your dataset size and complexity
-          warmup_steps=100,
-          output_path="./fine-tuned-model"  # Change this to where you want to save your model
-         )
+    # Simulated dataset
+    data = [
+        {"sentence1": "move the ball", "sentence2": "pass", "similarity": 0.9},
+        {"sentence1": "move the ball", "sentence2": "walk", "similarity": 0.1},
+        {"sentence1": "move the ball", "sentence2": "punt", "similarity": 0.8},
+        {"sentence1": "move the ball", "sentence2": "run", "similarity": 0.2},
+    ]
 
-# Load the fine-tuned model (optional if you continue using the same model object)
-model = SentenceTransformer("./fine-tuned-model")
+    fine_tuner.fine_tune(data=data)
+    fine_tuner.load_fine_tuned_model()
 
-# Now you can use the model as before to generate embeddings and calculate similarities
-# The target phrase and phrases to compare
-target_phrase = "front kick"
-phrases = ["walk", "pass", "punt", "run","thumb_down"]
-phrases = ['bow_arrow', 'fighting_stance', 'front_kick', 'hadouken', 'helicopter', 'index_pinch', 'kick', 'left_hook', 'left_kick', 'left_punch', 'mine', 'punch', 'push_back', 'right_clockwise_circle', 'right_hook', 'right_kick', 'right_punch', 'uppercut', 'walk_left', 'walk_right']
-target_phrase = "three finger"
-phrases = ["three_finger"]
-phrases_button = ["A","X","Y","B"]
-
-# Generate embeddings for each phrase
-target_embedding = model.encode(target_phrase)
-phrase_embeddings = model.encode(phrases)
-
-# Calculate and print the cosine similarity between the target and each phrase
-similarities = {}
-for phrase, embedding in zip(phrases, phrase_embeddings):
-    # Compute cosine similarity (note: 1 - cosine distance to get similarity)
-    similarity = 1 - cosine(target_embedding, embedding)
-    similarities[phrase] = similarity
-
-# Find the most similar phrase
-most_similar_phrase = max(similarities, key=similarities.get)
-print(f"The phrase most similar to '{target_phrase}' is: '{most_similar_phrase}' with a similarity score of {similarities[most_similar_phrase]:.4f}")
-
-# Optional: print all similarities for comparison
-for phrase, similarity in similarities.items():
-    print(f"Similarity to '{phrase}': {similarity:.4f}")
+    # Now, you can use fine_tuner.model as before to generate embeddings and calculate similarities

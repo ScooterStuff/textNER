@@ -23,9 +23,8 @@ TRAIN_DATA = [
     ("I prefer playing Rocket League with intuitive body movements", {"entities": [(17, 30, "GAME")]}),
     ("I use my left hand for navigation", {"entities": [(9, 13, "ORI"), (14, 18, "LANDMARK")]}),
     ("clenching a fist to boost speed", {"entities": [(0, 16, "GESTURE"),(20, 31, "ACTION-O")]}),
-# ("pointing with two fingers to change direction", {"entities": [(17, 30, "GAME")]}),
-("making a kicking motion to shoot the ball towards the goal", {"entities": [(9,23, "GESTURE"),(27,41, "ACTION-O")]}),
-("I want to jump when I pose thumb down.", {"entities": [(10,14, "ACTION-O"),(27,37, "POSES")]})
+    ("making a kicking motion to shoot the ball towards the goal", {"entities": [(9,23, "GESTURE"),(27,41, "ACTION-O")]}),
+    ("I want to jump when I pose thumb down.", {"entities": [(10,14, "ACTION-O"),(27,37, "POSES")]})
 ]
 
 
