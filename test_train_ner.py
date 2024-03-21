@@ -13,7 +13,7 @@ class TestNERComponents(unittest.TestCase):
     @patch("train_ner.spacy.load", return_value=spacy.blank("en"))
     def test_train_ner(self, mock_spacy_load):
         # Test the train_ner function
-        model_dir = "./fake_model_dir"
+        model_dir = "./unit_test_model_dir"
         new_data = [("Minecraft is a game", {"entities": [(0, 9, "GAME")]})]
         n_iter = 1
         # Mocking the spaCy load function to return a blank English model
