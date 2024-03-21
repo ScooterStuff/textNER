@@ -1,30 +1,50 @@
 # MotionInput Configuration Generator
 The MotionInput Configuration Generator is an innovative NLP/NER system designed to bridge the gap between natural language instructions and motion-based game controls. Utilizing cutting-edge language processing technologies, this project translates user-provided speech inputs into JSON configurations. These configurations enable the MotionInput program, which leverages OpenCV for motion detection, to dynamically map specific body movements or gestures to in-game actions, allowing for a customizable and immersive gaming experience.
 
+## Table of Contents
+1. [Overview](#overview)
+2. [Technologies](#technologies)
+3. [Setup](#setup)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+4. [Usage](#usage)
+    - [Example Input](#example-input)
+    - [Example Output](#example-output)
+5. [MotionInput NER Model Training](#motioninput-ner-model-training)
+    - [Overview](#overview-1)
+    - [Training the Model](#training-the-model)
+    - [Customization](#customization)
+6. [Testing](#testing)
+    - [Prerequisites](#prerequisites-1)
+    - [Running the Tests](#running-the-tests)
+    - [Writing and Adding New Tests](#writing-and-adding-new-tests)
+    - [Continuous Integration](#continuous-integration)
+7. [Maintenance Guide](#maintenance-guide)
+    - [Updating Entity Matchers](#introduction)
+    - [Extending Semantic Similarity Matching](#component-breakdown)
+    - [Updating Games Controls Mapping and Possible Gestures/Poses](#maintenance-guide)
+
 ## Overview
 This project integrates speech recognition, Named Entity Recognition (NER), and semantic similarity matching to interpret the user's game preferences and desired control schemes. The system supports a variety of games and gestures, understanding instructions such as "I want to play Minecraft with my left hand, using two fingers to place a block," and translating these into actionable configurations.
 
 ### Technologies
-* Speech Recognition: Utilizing VOSK for converting spoken language into text.
 * SpaCy: For Named Entity Recognition (NER), identifying key elements in the speech such as game names, body parts, and actions.
 * Sentence Transformers: Employed for semantic similarity matching, ensuring the user's described actions are accurately mapped to pre-defined in-game actions.
 * OpenCV: For motion detection, working in tandem with the generated configuration to recognize and interpret player gestures.
-
 
 ## Setup
 ### Prerequisites
 * Python 3.x
 * SpaCy
 * Sentence Transformers
-* VOSK API
-* SpiCy
+* SciPy
 
 Ensure you have Python 3.11+ installed on your system. Then, install the required Python packages using pip:
 ```
 pip install -r requirements.txt
 ```
 
-## Installation
+### Installation
 Clone this repository to your local machine.
 git clone https://github.com/ScooterStuff/textNER.git
 Navigate to the project directory.
@@ -75,33 +95,11 @@ This repository contains the training script for a Named Entity Recognition (NER
 The training script utilizes a custom dataset and SpaCy's powerful NLP capabilities to recognize and label specific entities within user inputs. These entities include:
 
 * Games: Recognizes game titles like Minecraft, Tetris, and others.
+* Orientation: Choose left or right part of landmark
+* Landmark: Where the main body part of controls
 * Gestures: Identifies specific gestures mentioned in the input, such as "hadouken" or "front kick".
 * Poses: Detects pose descriptions, like "thumb up" or "index pinch".
 * The trained model can then be integrated with the MotionInput Configuration Generator to interpret user-defined control schemes.
-
-## Prerequisites
-Before you begin, ensure you have the following installed:
-
-* Python 3.x
-* SpaCy
-* The SpaCy English model (en_core_web_sm or equivalent)
-* You can install SpaCy and the English model using pip:
-```
-pip install spacy
-python -m spacy download en_core_web_sm
-```
-
-## Setup
-1. Clone this repository to your local environment.
-```
-git clone https://github.com/yourusername/motioninput-ner-training.git
-```
-2. Navigate to the project directory.
-```
-cd motioninput-ner-training
-```
-
-
 
 ## Training the Model
 The script train_ner.py is used to train the NER model. Before running the script, ensure you have prepared your training data in the format expected by SpaCy. The script expects a file named train_data.py containing the variable TRAIN_DATA, which holds the training examples.
@@ -116,9 +114,8 @@ python train_ner.py
 ```
 The script will train the NER model using the provided data and save it to the ./ner_model directory.
 
-
 ## Customization
-You can customize the training process by modifying the train_ner function in the script. Parameters such as the model directory (model_dir), the training data (new_data), and the number of training iterations (n_iter) can be adjusted to suit your needs.
+You can customize the training process by modifying the train_ner function in the script. Parameters such as the model directory (model_dir), the training data (new_data), the number of training iterations (n_iter) can be adjusted to suit your needs and the dropout rate (drop).
 
 
 # Testing
@@ -170,7 +167,7 @@ Ensure all tests pass before submitting a pull request or making significant cha
 ## Continuous Integration
 Consider setting up continuous integration (CI) to automatically run these tests on every commit or pull request. This will help catch issues early and improve the quality of contributions.
 
-## Maintainance Breakdown
+# Maintainance Breakdown
 
 ### Introduction
 This system translates natural language descriptions of desired game control schemes into JSON configurations. These configurations dictate how physical gestures (identified via OpenCV) map to in-game actions. It hinges on Named Entity Recognition (NER) for identifying games, gestures, and actions, and employs semantic similarity matching to align described actions with predefined in-game commands.
@@ -188,7 +185,7 @@ This function computes the semantic similarity between the user's described acti
 4. Motion to Action Mapping (motion_to_action_mapping)
 After identifying the closest semantic match, this mapping translates it into a specific in-game action, like "jump" or "crouch." This mapping depends on a predefined list of actions supported per game.
 
-5. Processing Input (predict)
+5. Processing Input (predict_without_commas)
 This function orchestrates the processing of user input:
 
 Splits the input into manageable sentences.
@@ -198,24 +195,51 @@ Applies similarity matching and motion-to-action mapping to generate a detailed 
 Finally, this function compiles the processed data into a JSON configuration file. This file serves as the output, detailing how each gesture or pose is mapped to a specific in-game action.
 
 ## Maintenance Guide
-Updating Entity Matchers
-To add support for new games, gestures, or poses:
+### Updating Entity Matchers
+Matcher is a tool in Spacy that lets you search for sequences of tokens that match specific patterns. It's part of SpaCy's powerful processing pipeline and is used for identifying and extracting pieces of text based on criteria you define, without the need for regular expressions. This is particularly useful for Named Entity Recognition (NER), where you might want to identify specific terms or phrases in your text that match certain patterns.
+To expand the system's capabilities for recognizing new games, gestures, or poses, follow these steps:
 
-1. Update the patterns in the corresponding entity matcher functions (game_entity_matcher, gesture_entity_matcher, pose_entity_matcher).
-2. Retrain the SpaCy NER model if necessary, especially when introducing new entity types or significantly changing existing patterns.
+1. **Edit `game_entity_matcher`** to add more game:
+   - **Games Available**: Extend the `patterns` list to include new games. This list defines what clasified as GAME entities, so without it existing in the train_data set if the sentence pattern is similar to one that recognizes game it will then recognize it as a game.
+   - **Wording**: If the word have space in the middle e.g. Rocket League you need to do `[{"LOWER": "rocket"}, {"LOWER": "league"}]`, which then SpaCy will recognizes as one entity, also note that this can be use with regex e.g. `[{"LOWER": "final"}, {"LOWER": "fantasy"}, {"TEXT": {"REGEX": "^(X|V|I)+$"}}],`
+2. **Application to Other Matcher**:
+    - **gesture_entity_matcher**
+    - **pose_entity_matcher**
 
-Extending Semantic Similarity Matching
+### Extending Semantic Similarity Matching
 To improve or extend the similarity matching:
-1. Consider retraining the SentenceTransformer model on a more specific dataset if the current model struggles with accurately matching game-specific terminology.
-2. Adjust the similarity threshold in similarties_match if necessary to fine-tune the balance between matching accuracy and leniency.
+1. **Consider retraining the SentenceTransformer model in `sim_nlp.py`**  on a more specific dataset if the current model struggles with accurately matching game-specific terminology.
+  - 
+  ```python
+   data = [
+    {"sentence1": "move the ball", "sentence2": "pass", "similarity": 0.9},
+    {"sentence1": "move the ball", "sentence2": "walk", "similarity": 0.1}]
+2. **Adjust the similarity threshold** in similarties_match if necessary to fine-tune the balance between matching accuracy and leniency.
 
-Adding New Games or Actions
-1. Extend the games dictionary in motion_to_action_mapping with new games and their respective actions.
-2. Ensure new actions are well-represented in the training data for both the SentenceTransformer model and the SpaCy NER model.
+### Updating Games Controls Mapping and Possible Gestures/Poses
+To expand the system's capabilities for recognizing new games, gestures, or poses. Which may later be added to MotionInput, follow these steps:
 
-General Tips
+1. **Edit `game_controls.py`** to adjust game actions and key mappings:
+   - **Games Actions**: Extend the `games_actions` dictionary to include new games and their associated actions. This dictionary defines what actions (like jumping, running, placing items) are available for each game.
+   - **Key Mappings**: Update the `game_key_mappings` dictionary to map the newly added actions to specific keyboard inputs or controller buttons.
+   Example of adding a new game and its actions:
+   ```python
+   games_actions["NewGame"] = ["action1", "action2", "action3"]
+   game_key_mappings["NewGame"] = {
+       "action1": "key1",
+       "action2": "key2",
+       "action3": "key3"
+   }
+2. **Edit `available_gesture_and_pose.py`** to adjust available poses and gesture:
+   - **Possible Gestures/Poses**: Extend the `available_gestures` or `available_poses` dictionary to include new games and their associated actions. This dictionary defines what actions (like jumping, running, placing items) are available for each game.
+   
+   Example of adding a new game and its actions:
+   ```python
+   available_poses = ['fist', 'fist2',...]
+   available_gestures = ['bow_arrow', 'fighting_stance',...]
+
+## General Tips
 * Regularly update the underlying models (SpaCy, Sentence Transformers) to benefit from improvements in NLP technology.
 * Keep the training data for both NER and semantic similarity models current with new game releases and popular terminology to ensure the system remains relevant and effective.
 
 This guide aims to equip maintainers with a comprehensive understanding of the system's architecture and functions, facilitating effective management, troubleshooting, and enhancement of the system.
-
