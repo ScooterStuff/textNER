@@ -11,8 +11,6 @@ class ModelFineTuner:
     def prepare_data(self, data):
         """
         Convert a list of dictionaries to a DataLoader with InputExample objects.
-        :param data: A list of dictionaries with 'sentence1', 'sentence2', and 'similarity' keys
-        :return: A DataLoader object
         """
         df = pd.DataFrame(data)
         examples = [InputExample(texts=[row['sentence1'], row['sentence2']], label=row['similarity']) for index, row in df.iterrows()]
@@ -22,9 +20,6 @@ class ModelFineTuner:
     def fine_tune(self, data, epochs=4, warmup_steps=100):
         """
         Fine-tune the model on the provided dataset.
-        :param data: A list of dictionaries with 'sentence1', 'sentence2', and 'similarity' keys
-        :param epochs: Number of epochs to train for
-        :param warmup_steps: Number of warmup steps
         """
         train_dataloader = self.prepare_data(data)
         train_loss = losses.CosineSimilarityLoss(model=self.model)
