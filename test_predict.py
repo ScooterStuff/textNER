@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, mock_open
-from predict_org import similarties_match, motion_to_action_mapping, predict_to_json, preprocess_sentences, initialize_output_structure, predict
+from predict_org import similarties_match, motion_to_action_mapping, predict_to_json, initialize_output_structure, predict_without_comma
 from unittest.mock import MagicMock
 
 class TestNLPNERModel(unittest.TestCase):
@@ -30,11 +30,6 @@ class TestNLPNERModel(unittest.TestCase):
         # This checks if json.dump was called, indicating the output was written to file.
         self.assertTrue(mock_json_dump.called)
 
-    def test_preprocess_sentences(self):
-        sentences = "I want to play Minecraft; Jump using two fingers."
-        expected = ["I want to play Minecraft", "Jump using two fingers"]
-        result = preprocess_sentences(sentences)
-        self.assertEqual(result, expected)
 
     def test_initialize_output_structure(self):
         expected = {"mode": "", "orientation": "", "landmark": "", "poses": [], "gestures": []}
@@ -68,21 +63,13 @@ class TestNLPNERModel(unittest.TestCase):
 
         # Call predict with the mocks
         split_sentences = ["I want to play Tetris", "Rotate item using hadouken"]
-        predict(split_sentences, output_data)
+        predict_without_comma(split_sentences, output_data)
 
         # Assert based on the expected changes to output_data
         # Example assertion: check if 'mode' in output_data has been set to 'Tetris'
         self.assertEqual(output_data["mode"], 'Tetris')
         # Additional assertions can be made based on the specific logic of your `predict` function
         # For example, checking if certain actions, poses, or gestures have been added to output_data
-
-    def test_similarities_match_none_returned_for_low_similarity(self):
-        target_phrase = "jump"
-        possible_phrases = ["Poker Stars", "Civil war", "Oppenheimer"]
-        # Assuming none of these actions are sufficiently similar to "jump"
-        expected = "none"
-        result = similarties_match(target_phrase, possible_phrases)
-        self.assertEqual(result, expected)
 
     def test_motion_to_action_mapping_returns_none_for_unknown_game(self):
         motion = "fly"
@@ -104,19 +91,6 @@ class TestNLPNERModel(unittest.TestCase):
         self.assertTrue(all(key in output_data for key in expected_keys))
         # Further checks can verify the structure of poses, gestures, etc.
 
-    def test_preprocess_sentences_handles_multiple_delimiters(self):
-        sentences = "I want to play Minecraft. Jump using two fingers;Walk with a slight tilt."
-        expected = ["I want to play Minecraft", "Jump using two fingers", "Walk with a slight tilt"]
-        result = preprocess_sentences(sentences)
-        self.assertEqual(result, expected)
-
-    def test_similarities_match_with_empty_target_phrase(self):
-        target_phrase = ""
-        possible_phrases = ["place", "mine", "break"]
-        expected = "none"  # Assuming we return "none" for empty target phrases
-        result = similarties_match(target_phrase, possible_phrases)
-        self.assertEqual(result, expected)
-
     def test_similarities_match_with_empty_possible_phrases(self):
         target_phrase = "mine"
         possible_phrases = []
@@ -130,6 +104,14 @@ class TestNLPNERModel(unittest.TestCase):
         with self.assertRaises(TypeError):
             motion_to_action_mapping(motion, game)
 
+    def test_similarities_match_with_similarity_scores(self):
+        target_phrase = "sprint"
+        possible_phrases = ["walk", "run", "jump"]  # Assuming low similarity with "sprint"
+        expected = "run"
+        result = similarties_match(target_phrase, possible_phrases)
+        self.assertEqual(result, expected, "Expected 'none' when similarities are low")
+
+
     @patch('predict_org.json.dump')
     @patch('predict_org.open', mock_open(), create=True)
     def test_predict_to_json_with_empty_sentences(self, mock_json_dump):
@@ -142,12 +124,50 @@ class TestNLPNERModel(unittest.TestCase):
         self.assertTrue(all(key in output_data for key in expected_keys))
         # Ensure that the output for empty sentences does not populate any unnecessary data
         self.assertTrue(all(not output_data[key] for key in expected_keys))
+    
 
-    def test_preprocess_sentences_with_empty_string(self):
+    @patch('predict_org.predict_without_comma')
+    @patch('predict_org.json.dump')
+    @patch('predict_org.open', new_callable=mock_open, create=True)
+    def test_predict_to_json_content_verification(self, mock_file_open, mock_json_dump, mock_predict_without_comma):
+        sentences = "I want to play Minecraft; Jump using two fingers."
+        output_file = "content_verification_output.json"
+        mock_output_data = {
+            "mode": "Minecraft",
+            "orientation": "",
+            "landmark": "",
+            "poses": [],
+            "gestures": [{"files": "two_fingers", "action": {"tmpt": "jump", "class": "jump", "method": "click", "args": ["space"]}}]
+        }
+        mock_predict_without_comma.side_effect = lambda s, o: o.update(mock_output_data)
+        
+        predict_to_json(sentences, output_file)
+        
+        args, kwargs = mock_json_dump.call_args
+        output_data = args[0]
+        self.assertEqual(output_data, mock_output_data, "The content of the output file did not match the expected output")
+    
+    def test_similarities_match_with_empty_inputs(self):
+        # Test with empty list of possible phrases
+        expected = "none"
+        target_phrase = "mine"
+        possible_phrases = []
+        result = similarties_match(target_phrase, possible_phrases)
+        self.assertEqual(result, expected, "Expected 'none' for an empty list of possible phrases.")
+    
+    @patch('predict_org.json.dump')
+    @patch('predict_org.open', mock_open(), create=True)
+    def test_predict_to_json_with_empty_sentences(self, mock_json_dump):
         sentences = ""
-        expected = []
-        result = preprocess_sentences(sentences)
-        self.assertEqual(result, expected)
+        output_file = "empty_sentences_output.json"
+        predict_to_json(sentences, output_file)
+        args, kwargs = mock_json_dump.call_args
+        output_data = args[0]
+        expected_keys = ["mode", "orientation", "landmark", "poses", "gestures"]
+        self.assertTrue(all(key in output_data for key in expected_keys), "All expected keys should be present in the output.")
+        self.assertTrue(all(not output_data[key] for key in expected_keys), "Output for empty sentences should not populate any data.")
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,7 +2,7 @@ import unittest
 import json
 from pathlib import Path
 import spacy
-from predict_org import predict_to_json 
+from predict_org import predict_to_json, similarties_match
 
 class TestIntegrationNERModel(unittest.TestCase):
     @classmethod
@@ -72,7 +72,13 @@ class TestIntegrationNERModel(unittest.TestCase):
 
             self.assertEqual(output_data["mode"], expected_game, f"Expected game mode '{expected_game}' was not recognized correctly.")
 
-# Additional tests remain largely the same but ensure they align with your project's actual logic and output structures
+    def test_similarities_match(self):
+        target_phrase = "jump"
+        possible_phrases = ["run", "jump", "walk"]
+        expected_match = "jump"
+        match = similarties_match(target_phrase, possible_phrases)
+        self.assertEqual(match, expected_match, "The similarities_match function did not return the expected most similar phrase.")
+
 
 if __name__ == "__main__":
     unittest.main()
