@@ -209,11 +209,13 @@ To expand the system's capabilities for recognizing new games, gestures, or pose
 ### Extending Semantic Similarity Matching
 To improve or extend the similarity matching:
 1. **Consider retraining the SentenceTransformer model in `sim_nlp.py`**  on a more specific dataset if the current model struggles with accurately matching game-specific terminology.
-  - 
+  - **Example**
   ```python
-   data = [
-    {"sentence1": "move the ball", "sentence2": "pass", "similarity": 0.9},
-    {"sentence1": "move the ball", "sentence2": "walk", "similarity": 0.1}]
+  data = [
+        {"sentence1": "move the ball", "sentence2": "pass", "similarity": 0.9},
+        {"sentence1": "move the ball", "sentence2": "walk", "similarity": 0.1}]
+```
+
 2. **Adjust the similarity threshold** in similarties_match if necessary to fine-tune the balance between matching accuracy and leniency.
 
 ### Updating Games Controls Mapping and Possible Gestures/Poses
@@ -243,3 +245,7 @@ To expand the system's capabilities for recognizing new games, gestures, or pose
 * Keep the training data for both NER and semantic similarity models current with new game releases and popular terminology to ensure the system remains relevant and effective.
 
 This guide aims to equip maintainers with a comprehensive understanding of the system's architecture and functions, facilitating effective management, troubleshooting, and enhancement of the system.
+
+## Indepth Explaination
+* https://students.cs.ucl.ac.uk/2023/group21/
+* Credit: Tatsan Kantasit
