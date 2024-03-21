@@ -8,6 +8,7 @@ import pandas as pd
 from sentence_transformers import evaluation
 
 # Simulated dataset: Normally, you'd load a dataset from a file
+#This could be fine tune more potentially
 data = [
     {"sentence1": "move the ball", "sentence2": "pass", "similarity": 0.9},
     {"sentence1": "move the ball", "sentence2": "walk", "similarity": 0.1},
