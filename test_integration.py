@@ -2,8 +2,6 @@ import unittest
 import json
 from pathlib import Path
 import spacy
-import time
-# Ensure this import matches the actual location and name of your script
 from predict_org import predict_to_json 
 
 class TestIntegrationNERModel(unittest.TestCase):

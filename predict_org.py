@@ -49,10 +49,16 @@ def motion_to_action_mapping(motion, game):
     Use similarities match to map the closest motion by user to in game action.
     """
     games = {
-        "Minecraft": ["place", "mine", "break", "inventory", "punch", "jump", "crouch", "walk", "run", "sprint"],
-        "Roblox": ["jump"],
-        "Tetris": ["rotate","drop", "switch","left","right","store"]
-    }
+    "Minecraft": ["place", "mine", "break", "inventory", "punch", "jump", "crouch", "walk", "run", "sprint"],
+    "Roblox": ["jump", "move", "interact"],
+    "Tetris": ["rotate", "drop", "switch", "left", "right", "store"],
+    "Lego Batman": ["attack", "jump", "special", "switch", "move"],
+    "Batman (Arkham Series)": ["attack", "counter", "gadget", "crouch", "run"],
+    "Subway Surfer": ["jump", "left", "right", "roll"],
+    "Rocket League": ["accelerate", "brake", "left", "right", "boost", "jump", "power slide"],
+    "Horizon Zero Dawn": ["attack", "aim", "crouch", "jump", "roll"],
+    "FIFA": ["pass", "shoot", "sprint", "tackle", "change player"]
+}
     if game in games:
         # Use the similarties_match function to find the most similar action
         return similarties_match(motion, games[game])
@@ -61,20 +67,75 @@ def motion_to_action_mapping(motion, game):
     
 def action_to_key_input(action, game): #Minecraft, place
     games = {
-       "Minecraft":{
-    "place": "right",
-    "mine": "left",
-    "break": "left",
-    "inventory": "e",
-    "punch": "left",
-    "jump": "space",
-    "crouch": "shift",
-    "walk": "w",
-    "run": "w",
-    "sprint": "w"
-},
-
-        "Tetris": {"rotate":"up","drop":"down", "switch":"c","left":"left","right":"right","store":"c"}
+        "Minecraft": {
+            "place": "right",
+            "mine": "left",
+            "break": "left",
+            "inventory": "e",
+            "punch": "left",
+            "jump": "space",
+            "crouch": "shift",
+            "walk": "w",
+            "run": "w",
+            "sprint": "ctrl+w"
+        },
+        "Tetris": {
+            "rotate": "up",
+            "drop": "down",
+            "switch": "c",
+            "left": "left",
+            "right": "right",
+            "store": "c"
+        },
+        "Lego Batman": {
+            "attack": "space",
+            "jump": "space",
+            "special": "e",
+            "switch": "q",
+            "move": "wasd"
+        },
+        "Batman (Arkham Series)": {
+            "attack": "left",
+            "counter": "right",
+            "gadget": "e",
+            "crouch": "ctrl",
+            "run": "shift"
+        },
+        "Subway Surfer": {
+            "jump": "space",
+            "left": "left",
+            "right": "right",
+            "roll": "down"
+        },
+        "Rocket League": {
+            "accelerate": "w",
+            "brake": "s",
+            "left": "a",
+            "right": "d",
+            "boost": "shift",
+            "jump": "space",
+            "power slide": "ctrl"
+        },
+        "Horizon Zero Dawn": {
+            "attack": "left",
+            "aim": "right",
+            "crouch": "ctrl",
+            "jump": "space",
+            "roll": "shift"
+        },
+        "FIFA": {
+            "pass": "a",
+            "shoot": "s",
+            "sprint": "shift",
+            "tackle": "d",
+            "change player": "q"
+        },
+        "Roblox": {
+            "jump": "space",
+            "move": "wasd",
+            "interact": "e"
+            # Note: Roblox controls can vary significantly by game. These are very basic.
+        }
     }
     return games[game][action]
 
@@ -203,16 +264,13 @@ def predict_without_comma(sentences, output_data):
                 }
             }
             output_data[action_type].append(action_data)
-    print(output_data)
 
 
 
 def main():
     predict_text = "I want to play Tetris with my left hand, Rotate item using hadouken, To crouch just do a thumb down, Use the index pinch to interact with objects"
-    # predict_text = "I want to play Minecraft. I want to jump using three fingers"
     predict_text = "I want to play Minecraft with my right arm I want to jump when I pose thumb down I want to do index pinch to place down a block three fingers to destroy."
-    predict_to_json(predict_text, "prediction_output_two.json")
-    # predict_text = "I want to play Minecraft with my right arm, I want to jump when I pose thumb down, I want to do index pinch to place down a block, three fingers to destroy."
+    predict_to_json(predict_text, "prediction_output.json")
     
 
 if __name__ == "__main__":
