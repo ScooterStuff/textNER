@@ -23,17 +23,19 @@ class NERTrainer:
         else:
             print("Creating a new model")
             self.nlp = spacy.blank("en")  # Create a blank Language class
-            if "ner" not in self.nlp.pipe_names:
-                self.nlp.add_pipe("ner", last=True)
 
     def _add_entity_matchers(self):
-        for component_name, component_func in [
-            ("game_entity_matcher", game_entity_matcher),
-            ("gesture_entity_matcher", gesture_entity_matcher),
-            ("pose_entity_matcher", pose_entity_matcher),
-        ]:
+        # List of component names to add
+        component_names = [
+            "game_entity_matcher",
+            "gesture_entity_matcher",
+            "pose_entity_matcher",
+        ]
+        for component_name in component_names:
+            # Check if the component is not already in the pipeline
             if component_name not in self.nlp.pipe_names:
-                self.nlp.add_pipe(component_func, name=component_name, last=True)
+                # Add the component to the pipeline using its registered name
+                self.nlp.add_pipe(component_name, last=True)
 
     def train(self, new_data=TRAIN_DATA, n_iter=200):
         if "ner" not in self.nlp.pipe_names:
