@@ -117,6 +117,43 @@ The script will train the NER model using the provided data and save it to the .
 ## Customization
 You can customize the training process by modifying the train_ner function in the script. Parameters such as the model directory (model_dir), the training data (new_data), the number of training iterations (n_iter) can be adjusted to suit your needs and the dropout rate (drop).
 
+# Fine-Tuning Sentence Transformers for Semantic Similarity
+
+This repository provides a script for fine-tuning Sentence Transformer models on custom datasets to improve semantic similarity detection between sentences. It leverages the sentence-transformers library, allowing users to enhance pre-trained models with their data for tasks like semantic search, text clustering, and more.
+
+## Overview
+
+The script fine-tunes models by adjusting them to recognize similarities and differences between pairs of sentences based on a similarity score. This process is crucial for applications requiring a deep understanding of sentence semantics beyond keyword matching.
+
+### Prerequisits
+* torch
+* pandas
+* sentence-transformers
+
+### Key Features
+
+* Easy to use with any Sentence Transformer model.
+* Customizable fine-tuning with your dataset.
+* Supports various NLP tasks post fine-tuning.
+
+## Preparing Your Data
+
+Your dataset should be a list of dictionaries, each containing two sentences and a similarity score. The score indicates how similar the sentences are, on a scale (e.g., 0.0 to 1.0).
+
+Example dataset format:
+```
+data = [
+    {"sentence1": "Example sentence one.", "sentence2": "Example sentence two.", "similarity": 0.8},
+    # Add more data points here
+]
+```
+
+### Running the Fine Tuning Script
+To fine tune your model, simply run:
+```
+cd similarity_model_train
+python sim_nlp.py
+```
 
 # Testing
 This project includes a suite of tests to ensure the functionality, integration, and performance of the MotionInput Configuration Generator and its associated NER model. Below you will find instructions on how to run these tests, which are divided into unit tests and integration tests.
