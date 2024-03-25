@@ -63,6 +63,19 @@ Run the main script to generate the JSON configuration.
 python main.py
 The script will output a JSON file (prediction_output.json) in the project directory, which contains the mappings for game controls based on your input.
 
+### Text Mode
+You can insert the text that you the script to run with like the example below:
+```
+python main.py "I want to play Minecraft with my right arm I want to jump when I pose thumb down I want to do index pinch to place down a block three fingers to destroy."
+```
+
+### Speech Mode
+Due to we using MotionInput VOSK/Whisper to do the speech transcribe anyway this part is just demonstrating that but with my own speech transcribing tool (IMPORTANT: This will not be integrated with the main MotionInput software)
+You can insert the audio.wav audio in the /speech directory and then run this script:
+```
+python speech_mode_main.py
+```
+
 ### Example Input
 "I want to play Minecraft with my left hand use two fingers to place down a block."
 
@@ -85,6 +98,7 @@ The script will output a JSON file (prediction_output.json) in the project direc
     ]
 }
 ```
+
 
 
 # MotionInput NER Model Training
