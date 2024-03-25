@@ -4,7 +4,7 @@ import speech_recognition as sr
 # Convert MP3 to WAV
 def convert_mp3_to_wav(mp3_file_path, wav_file_path):
     audio = AudioSegment.from_mp3(mp3_file_path)
-    audio.export(wav_file_path, format="wav")
+    audio.export(wav_file_path, format="")
 
 # Transcribe audio file to text
 def transcribe_audio(wav_file_path):
@@ -14,7 +14,7 @@ def transcribe_audio(wav_file_path):
         text = recognizer.recognize_google(audio_data)
         return text
 
-wav_file = "c:/Users/ASUS/Desktop/textLLM/audio.wav"  # Corrected path
+wav_file = "c:/Users/ASUS/Desktop/TEXTNER-1/speech/audio.wav"  # Corrected path
 
 transcribed_text = transcribe_audio(wav_file)
 print(transcribed_text)

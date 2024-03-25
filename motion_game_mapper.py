@@ -130,6 +130,7 @@ def main():
     mapper = MotionGameMapper()
     predict_text = "I want to play Minecraft with my right arm I want to jump when I pose thumb down I want to do index pinch to place down a block three fingers to destroy."
     mapper.predict_to_json(predict_text, "prediction_output.json")
+    
 
 if __name__ == "__main__":
     main()
