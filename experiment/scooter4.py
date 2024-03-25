@@ -46,13 +46,13 @@ new_embeddings = get_embeddings(new_words)
 
 from sklearn.metrics import pairwise_distances
 
-# manhattan_distances = pairwise_distances(new_embeddings, base_embeddings, metric='manhattan')
-# similarity_scores = 1 / (1 + manhattan_distances)
+manhattan_distances = pairwise_distances(new_embeddings, base_embeddings, metric='manhattan')
+similarity_scores = 1 / (1 + manhattan_distances)
 
 # euclidean_distances = pairwise_distances(new_embeddings, base_embeddings, metric='euclidean')
 # similarity_scores = 1 / (1 + euclidean_distances)
 
-similarity_scores = cosine_similarity(new_embeddings, base_embeddings)
+# similarity_scores = cosine_similarity(new_embeddings, base_embeddings)
 
 # Calculate the positions of the new words based on the similarity scores
 # The position is a weighted average of the base word positions based on similarity scores
@@ -112,14 +112,31 @@ for i, (word, position) in enumerate(zip(base_words, base_word_positions)):
 
 # Plot the adjusted positions of new words with cluster colors
 for i, (word, position, label) in enumerate(zip(new_words, adjusted_positions, cluster_labels)):
+    # if colors[label] == 'purple':
+    #     plt.scatter(position[0], position[1], c='blue', marker='*', s=200)
+    #     plt.text(position[0], position[1], word, fontsize=12)
+    # elif colors[label] == 'blue':
+    #     plt.scatter(position[0], position[1], c='purple', marker='*', s=200)
+    #     plt.text(position[0], position[1], word, fontsize=12)
+    # else:
+    #     plt.scatter(position[0], position[1], c=colors[label], marker='*', s=200)
+    #     plt.text(position[0], position[1], word, fontsize=12)
     plt.scatter(position[0], position[1], c=colors[label], marker='*', s=200)
     plt.text(position[0], position[1], word, fontsize=12)
+    
 
 # Plot centroids
 for centroid, color in zip(centroids, colors):
+    # if color == 'purple':
+    #     plt.scatter(centroid[0], centroid[1], c='blue', marker='x', s=200, lw=2)
+    # elif color == 'blue':
+    #     plt.scatter(centroid[0], centroid[1], c='purple', marker='x', s=200, lw=2)
+    # else:
+    #     plt.scatter(centroid[0], centroid[1], c=color, marker='x', s=200, lw=2)
     plt.scatter(centroid[0], centroid[1], c=color, marker='x', s=200, lw=2)
+    
 
-plt.title('K-Means Clustering on Adjusted Word Similarity Space')
+plt.title('K-Means Clustering on Adjusted Word Similarity Space (Manhattan)')
 plt.xlabel('Dimension 1')
 plt.ylabel('Dimension 2')
 plt.grid(True)
