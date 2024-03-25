@@ -102,6 +102,11 @@ class MotionGameMapper:
                 output_data["landmark"] = ent.text
             else:
                 actions.append((ent.label_[0], ent.text))
+        
+        # Act as a break point in MotionInput, as to not have a game mean mode can't be created
+        if game == '':
+            output_data["mode"] = "No Game Selected"
+            return
 
         # Pair adjacent actions for further processing. Assumes actions come in meaningful pairs.
         result = []
